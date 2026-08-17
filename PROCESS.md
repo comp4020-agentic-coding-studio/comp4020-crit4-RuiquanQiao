@@ -1,85 +1,54 @@
 # Process overview
 
-<!-- TEMPLATE: this file is a shape to fill in, not a form. Replace everything
-     in it with your own overview, and delete this comment — `pnpm
-     check:evidence` will remind you if it's still here. -->
-
-A reading-guide to how the work came together --- a map to your process, not an
-essay about it. Markers read this file and follow its citations; they don't
-trawl the repo for evidence you didn't point at, so if a moment mattered, cite
-it.
-
-This file is the shape; the course site's
-[assessment page](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#what-you-submit)
-is the requirement, and its
-[word counts](https://comp.anu.edu.au/courses/comp4020-agentic-coding-studio/topics/assessment/#word-counts)
-cover every deliverable.
-
 ## What I built
 
-One paragraph: the thing, and the idea behind it.
+A guzheng in the browser. Twenty-one strings are drawn across the page; press
+and drag over them and each string the pointer crosses is plucked, so a fast
+sweep is a glissando. The same strings play from the number and QWERTY rows, so
+it works with mouse, keyboard or touch. Sound is synthesised live with the Web
+Audio API — Karplus-Strong plucked strings, a little reverb — never played back.
+The strings are tuned to a pentatonic scale, which is the whole idea: whatever
+you do to it, it sounds like music.
 
 ## The moments that mattered
 
-Three or four for an assignment; fewer is fine for a weekly prototype. Keep the
-list short so each moment has room to do all four jobs:
+**I made "no way to play it wrong" a test, not a hope.** The obvious move is to
+tune the strings, listen, and trust it. Instead I built the tuning from D2
+upward keeping only pitch classes of D major pentatonic, exported the table, and
+asserted in `spec/instrument.test.ts` that all 21 strings are pentatonic
+degrees. Now the spec line is a check that goes red the instant a string drifts
+off the scale, which is stronger than any sentence I could write about it.
+[`fef614c`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit4-RuiquanQiao/commit/fef614c)
+· [`fef614c...515e53d`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit4-RuiquanQiao/compare/fef614c...515e53d)
 
-1. **what happened** --- the problem, or the thing that went wrong
-2. **what you did instead of the obvious thing** --- the call you made, and why
-   it beat the obvious one
-3. **how you knew it was right** --- the check you ran, the viewport you looked
-   at, what you read before accepting the diff
-4. **the citation** --- a commit or commit range, a `CLAUDE.md` change, a check
-   that went from red to green, a prompt paired with the commit it produced
+**I chose Karplus-Strong because my ear is the harness this week.** A plain
+oscillator would have passed every automated check and still sounded like a toy,
+and no test I can write knows the difference. So I used a physical model — noise
+through a delay line tuned to the string's period, damped at 0.996 so it decays
+like a real string — and rendered each pluck to a buffer up front so playback
+adds no per-sample work. The judgement that mattered here I reserved for
+listening, which is exactly the split the brief asks for.
+[`1134fa5`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit4-RuiquanQiao/commit/1134fa5)
 
-Jobs 2 and 3 are the ones the repo can't tell a reader on its own, so they're
-where the marks are. The strongest moments are the ones where a correction
-landed in the **harness** --- the standards and checks your work has to satisfy
---- rather than in a retry: a rule added to `CLAUDE.md`, a check wired up, an
-attempt thrown away. Retrying until it passes is the routine case, and changing
-what the work runs against is the skilled one.
+**I turned the autoplay restriction into the invitation.** Browsers refuse to
+make sound until a user gesture, which normally shows up as a silent, broken
+page. Rather than paper over it, I made the opening screen's first touch do both
+jobs — resume the AudioContext and play the first note — so the constraint
+became "the opening screen invites the first sound" instead of a bug. I grounded
+this by checking that `AudioContext.state` only reaches `running` after a real
+gesture, never before.
+[`5b11ba1`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit4-RuiquanQiao/commit/5b11ba1)
 
-Cite each moment as a link whose text is the commit hash or range and whose
-target is this repo's commit or compare URL, so a reader clicks straight to the
-evidence:
+**I verified expressiveness and cost in the live page, not on faith.** Driving
+the instrument in the browser, one top-to-bottom sweep plucked all 21 strings at
+once — 21 simultaneous voices, under the cap of 24 I set so a hard glissando
+can't clip — and a full redraw measured about 0.1ms, so the animation never
+competes with the audio. That the same gesture path is what produces the sound
+is why two players sound different.
+[`515e53d`](https://github.com/comp4020-agentic-coding-studio/comp4020-crit4-RuiquanQiao/commit/515e53d)
 
-- one commit: [`a1b2c3d`](https://github.com/YOUR-ORG/YOUR-REPO/commit/a1b2c3d)
-- a range:
-  [`a1b2c3d...e4f5a6b`](https://github.com/YOUR-ORG/YOUR-REPO/compare/a1b2c3d...e4f5a6b)
+## Before the crit
 
-To pair a prompt with the commit it produced, quote the prompt (curated, not a
-full transcript) next to the citation:
-
-> the prompt, verbatim
-
-Screenshots are welcome where one carries the verification better than a
-sentence does. Commit the file to this repo and link it with a **relative**
-path, which is what makes it render on GitHub: `![alt text](docs/before.png)`.
-Images don't count towards the word count and don't replace the citation.
-
-### A worked moment, for shape
-
-Delete this section along with the rest of the boilerplate --- it's here to show
-the four jobs in one paragraph, not to be imitated in content.
-
-> The date formatter kept coming back with `toLocaleDateString()` and no locale
-> argument, so the same build rendered differently on my machine and in CI. I'd
-> already re-prompted it twice, which fixed the line but not the habit, so the
-> third time I put the rule in `CLAUDE.md` instead
-> ([`3f9ac21`](https://github.com/YOUR-ORG/YOUR-REPO/commit/3f9ac21)) and added
-> a spec test that fails on a bare `toLocaleDateString`. That's what told me it
-> had actually taken: the test went red against the old code and green against
-> the new, and the next two features it wrote passed it without prompting
-> ([`3f9ac21...b7e0d14`](https://github.com/YOUR-ORG/YOUR-REPO/compare/3f9ac21...b7e0d14)).
-
-## Before you ship
-
-`pnpm check:evidence` verifies your citations resolve to real commits, that the
-current reflection entry is in `reflections/`, and that your `CLAUDE.md` is
-there --- before a marker ever opens the file. It checks that your map is
-traceable, not that it is good: the marker judges whether your small,
-deliberately chosen set of moments shows real judgement and reflection. A green
-check is not a substitute for that curation.
-
-Images are deliberately not checked, because whether one renders is visible the
-moment you look. Open this file on GitHub and look at it before you ship.
+The one check I can't automate is the ear. Before the session I play it on
+speakers — not muted — and listen for latency and feel, because that is the
+harness the brief hands me and the green suite can't stand in for it.
