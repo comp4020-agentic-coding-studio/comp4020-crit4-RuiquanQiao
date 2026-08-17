@@ -1,23 +1,33 @@
 <!doctype html>
-<html lang="en-AU">
+<html lang="zh-Hans">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>COMP4020 prototype</title>
+    <meta
+      name="description"
+      content="一件可以在浏览器里拨响的古筝。按住并划过琴弦,快速扫过即成滑音。五声定弦,怎么拨都不会错。"
+    />
+    <title>古筝 · Guzheng</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
     <header>
-      <nav aria-label="Primary">
-        <a href="./">Home</a>
+      <nav aria-label="控制">
+        <button id="mute" type="button" aria-pressed="false">🔊 声音</button>
       </nav>
     </header>
     <main>
-      <h1>COMP4020 prototype</h1>
-      <p data-testid="intro">
-        Replace this with your prototype. This week's brief is on the course website;
-        <code>spec/README.md</code> explains how the checks in this repo relate to it.
-      </p>
+      <h1 class="visually-hidden">古筝 · 一件可以拨响的浏览器古筝</h1>
+      <canvas
+        id="qin"
+        tabindex="0"
+        role="application"
+        aria-label="古筝:二十一根五声定弦的琴弦。按住并划过琴弦拨响,快速扫过即成滑音;也可用数字键与 QWERTY 字母键行从低到高弹奏。怎么拨都不会错。"
+      ></canvas>
+      <button id="start" class="overlay" type="button">
+        <span class="start-title">古筝</span>
+        <span class="start-hint">按住 · 划过琴弦</span>
+      </button>
     </main>
     <script type="module" src="./main.ts"></script>
   </body>
